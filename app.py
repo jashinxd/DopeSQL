@@ -19,8 +19,12 @@ def register():
         else:
                 username = request.form["username"]
                 password = request.form["password"]
-                Append.register(username,password)
-                return redirect(url_for("login"))
+                if Append.validuname(username):
+                        error = "Username already exists. Please try again."
+                        return render_template("register.html", err = error)
+                else:
+                        Append.register(username,password)
+                        return redirect(url_for("login"))
 
 @app.route("/login", methods = ["POST", "GET"])
 def login():

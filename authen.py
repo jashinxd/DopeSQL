@@ -1,16 +1,10 @@
-import sqlite3
+from pymongo import MongoClient
 
 def authenticate(username,password):
-    conn = sqlite3.connect("StoryBase.db")
-    c = conn.cursor()
-    q = """
-    SELECT Username, Password
-    FROM Login
-    WHERE Login.Username = '%s'
-    """ % (username)
-    result = c.execute(q)
-    for r in result:
-        if r[1] == password:
-            return True
+    connection = MongoClient()
+    db = connection['users']
+    curs = db.users.find({'uname':username, 'pword':password})
+    if curs.count() != 0:
+        return True
     return False
 

@@ -4,6 +4,9 @@
 
 {% block body %} 
 
+{%if err %}
+<h3> {{err}} </h3>
+{% endif %}
     Please Register: <br>
 
     <form method = "POST">
