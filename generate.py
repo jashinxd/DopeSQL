@@ -4,15 +4,16 @@ import os.path
 
 connection = MongoClient()
 
-x = os.path.isfile("StoryBase.db")
+#x = os.path.isfile("StoryBase.db")
 
-if not x:
-   db = connection['StoryBase']
+db = connection['StoryBase']
+if (db.Users.count() == 0):
    d = {'username': 'testname', 'Password': 'testpass'}
    db.Users.insert(d)
+if (db.Stories.count() == 0):
    d = {'Content': 'testname', 'Name': 'testname', 'Username': 'testuname', 'ID': 'testid', 'Date': 'testdate'}
    db.Stories.insert(d)
-   print db.collection_names()
+print db.collection_names()
 #   curs = connect.cursor()
 #   List = ["""
 #   CREATE TABLE Login(
