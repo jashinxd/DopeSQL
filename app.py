@@ -94,14 +94,17 @@ def storypage():
 
 @app.route("/addStory",methods=["GET","POST"])
 def addStory():
+        if 'n' not in session:
+                return redirect("/login")
         if (request.method=="GET"):
                 return render_template("addStory.html")
         else:
                 Story = request.form["Story"]
                 Title = request.form["Title"]
-                Append.addStory(Story,Title,session['n'],Append.GreatestStoryID() + 1,datetime.date.today().strftime("%B,%d,%Y"))
+                
+                Append.addStory(Story,Title,session['n'],datetime.date.today().strftime("%B,%d,%Y"))
                 return redirect(url_for("storypage"))
-
+                
 if (__name__ == "__main__"):
         app.debug = True
         app.secret_key = "secret"
