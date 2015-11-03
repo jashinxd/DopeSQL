@@ -20,23 +20,29 @@ def register(username,password):
 
 def validuname(username):
     connection = MongoClient()
-    db = connection['Story']
+    db = connection['StoryBase']
     curs = db.users.find({'uname':username})
+    print curs.count()
+    if curs.count() == 0:
+        return True
+    return False
+
+def authenticate(username,password):
+    connection = MongoClient()
+    db = connection['StoryBase']
+    print username, password
+    curs = db.users.find({'uname':username, 'pword':password})
+    print curs.count()
     if curs.count() != 0:
         return True
     return False
-    
-
 
 def comment(storyID, CContent, Date):
     connection = MongoClient()
     db = connection['Comments']
     db.users.insert({'storyID': storyID, 'CContent': CContent, 'Date': Date})
-    
-def addStory(Content, Name, Username, ID, Date):
-    conn = sqlite3.connect("StoryBase.db")
-    c = conn.cursor()
-    q = """insert into Stories values ('%s','%s','%s','%s','%s');""" % (Content,Name,Username,ID,Date)
-    c.execute(q)
-    conn.commit()
 
+def addStory(Content, Name, Username, Date):
+    connection = MongoClient()
+    db = connection['StoryBase']
+    db.stories.insert({'content': Content, 'title': Name, 'uname': Username, 'date': Date})
