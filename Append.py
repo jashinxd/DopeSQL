@@ -60,3 +60,9 @@ def getComments():
     comments = db.comments.find()
     return comments
 
+def getCommentsSpec(postid):
+    connection = MongoClient()
+    db = connection['Comments']
+    comments = db.comments.find()
+    return comments 
+

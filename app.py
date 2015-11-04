@@ -52,6 +52,7 @@ def storypage():
     MainHTML = ""
     result = Append.getStory()
     for r in result:
+        print r["uname"]
     	StoryHTML = """ 
 	<table>
 	  <tr>
@@ -73,15 +74,15 @@ def storypage():
         </form>
         Comments: <br><hr>""" % (r["uname"])
         comments = Append.getComments()
+        MainHTML = MainHTML + StoryHTML
     	for y in comments:
-    		StoryHTML += '<p style="font-size:70%">'
-    		commentHTML = """
+    		commentHTML += '<p style="font-size:70%">'
+    		commentHTML += """
     		%s <span style="color: #ff0000"> on %s </span>
                 <hr>
                 """ % (y["CContent"],y["Date"])
 		commentHTML += "</p>"
-    		StoryHTML = StoryHTML + commentHTML
-		MainHTML = MainHTML + StoryHTML    		
+		MainHTML = MainHTML + commentHTML
     return render_template("storypage.html", result=MainHTML)
 
 @app.route("/addStory",methods=["GET","POST"])
