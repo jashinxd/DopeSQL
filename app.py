@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
-import authen
 import Append
 import datetime
+from pymongo import MongoClient
 from random import randint
 
 app = Flask(__name__)
@@ -19,8 +19,12 @@ def register():
         else:
                 username = request.form["username"]
                 password = request.form["password"]
-                Append.register(username,password)
-                return redirect(url_for("login"))
+                if Append.validuname(username):
+                        error = "Username already exists. Please try again."
+                        return render_template("register.html", err = error)
+                else:
+                        Append.register(username,password)
+                        return redirect(url_for("login"))
 
 @app.route("/login", methods = ["POST", "GET"])
 def login():
@@ -30,7 +34,7 @@ def login():
 		username = request.form["username"]
 		password = request.form["password"]
 		session['username'] = request.form["username"]
-                if (authen.authenticate(username, password)):
+                if (Append.authenticate(username, password)):
                         session['n']=username
                         return redirect(url_for("storypage"))
                 else:
@@ -41,16 +45,12 @@ def login():
 def storypage():
     if (request.method == "POST"):
     	Append.comment(request.form["button"],request.form["comment"],datetime.date.today().strftime("%B %d, %Y"))
-    q="""
-    SELECT *
-    FROM Stories;
-    """
-    conn = sqlite3.connect("StoryBase.db")
-    c = conn.cursor()
-    xonn = sqlite3.connect("StoryBase.db")
-    x = xonn.cursor()
+    connection = MongoClient()
+    db = connection['StoryBase']
+    connectionComments = MongoClient()
+    dbComments = connectionComments['Comments']
     MainHTML = ""
-    result = c.execute(q)
+    result = Append.getStory()
     for r in result:
     	StoryHTML = """ 
 	<table>
@@ -72,11 +72,7 @@ def storypage():
         <input type="submit" name="button" value=%s>
         </form>
         Comments: <br><hr>""" % (r[3])
-    	d="""
-        SELECT *
-    	FROM comments where storyID = %s;
-    	""" % (r[3])
-    	comments = x.execute(d)
+        comments = Append.getComments()
     	for y in comments:
     		StoryHTML += '<p style="font-size:70%">'
     		commentHTML = """
@@ -85,17 +81,20 @@ def storypage():
                 """ % (y[1],y[2])
 		commentHTML += "</p>"
     		StoryHTML = StoryHTML + commentHTML
-    	MainHTML = MainHTML + StoryHTML    		
+		MainHTML = MainHTML + StoryHTML    		
     return render_template("storypage.html", result=MainHTML)
 
 @app.route("/addStory",methods=["GET","POST"])
 def addStory():
+        if 'n' not in session:
+                return redirect("/login")
         if (request.method=="GET"):
                 return render_template("addStory.html")
         else:
                 Story = request.form["Story"]
                 Title = request.form["Title"]
-                Append.addStory(Story,Title,session['n'],Append.GreatestStoryID() + 1,datetime.date.today().strftime("%B,%d,%Y"))
+                
+                Append.addStory(Story,Title,session['n'],datetime.date.today().strftime("%B,%d,%Y"))
                 return redirect(url_for("storypage"))
 
 if (__name__ == "__main__"):
