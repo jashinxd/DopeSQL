@@ -96,7 +96,7 @@ def addStory():
                 
                 Append.addStory(Story,Title,session['n'],datetime.date.today().strftime("%B,%d,%Y"))
                 return redirect(url_for("storypage"))
-
+                
 if (__name__ == "__main__"):
         app.debug = True
         app.secret_key = "secret"
