@@ -24,8 +24,8 @@ def validuname(username):
     curs = db.users.find({'uname':username})
    # print curs.count()
     if curs.count() == 0:
-        return True
-    return False
+        return False
+    return True
     
 
 def authenticate(username,password):
@@ -59,3 +59,4 @@ def getComments():
     db = connection['Comments']
     comments = db.comments.find()
     return comments
+

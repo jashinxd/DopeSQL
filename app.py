@@ -55,14 +55,14 @@ def storypage():
     	StoryHTML = """ 
 	<table>
 	  <tr>
-	    <td style="font-size:200%"> """ + r[1] + """
+	    <td style="font-size:200%"> """ + r["title"] + """
 	    </td> <td style="font-size:150%">
-	    by """+r[2]+"""
-	    </td> <td style="font-size:150%"> on """ + r[4] +"""
+	    by """+r["uname"]+"""
+	    </td> <td style="font-size:150%"> on """ + r["date"] +"""
 	    </td> 
 	  </tr><tr style="font-size:120%">
 	    <td colspan="3">
-            """+ r[0]+ """
+            """+ r["content"] + """
 	    </td>
 	  </tr>
 	</table>
@@ -71,14 +71,14 @@ def storypage():
         Add a Comment: <input type="text" name="comment">
         <input type="submit" name="button" value=%s>
         </form>
-        Comments: <br><hr>""" % (r[3])
+        Comments: <br><hr>""" % (r["uname"])
         comments = Append.getComments()
     	for y in comments:
     		StoryHTML += '<p style="font-size:70%">'
     		commentHTML = """
     		%s <span style="color: #ff0000"> on %s </span>
                 <hr>
-                """ % (y[1],y[2])
+                """ % (y["CContent"],y["Date"])
 		commentHTML += "</p>"
     		StoryHTML = StoryHTML + commentHTML
 		MainHTML = MainHTML + StoryHTML    		
