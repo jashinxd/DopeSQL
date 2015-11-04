@@ -22,31 +22,18 @@ def validuname(username):
     connection = MongoClient()
     db = connection['StoryBase']
     curs = db.users.find({'uname':username})
-<<<<<<< HEAD
    # print curs.count()
     if curs.count() == 0:
         return True
     return False
     
-=======
-    print curs.count()
-    if curs.count() == 0:
-        return True
-    return False
->>>>>>> 568a5d83fd60d78f1ece0cd5b15db83100ae0789
 
 def authenticate(username,password):
     connection = MongoClient()
     db = connection['StoryBase']
-<<<<<<< HEAD
     #print username, password
     curs = db.users.find({'uname':username, 'pword':password})
     #print curs.count()
-=======
-    print username, password
-    curs = db.users.find({'uname':username, 'pword':password})
-    print curs.count()
->>>>>>> 568a5d83fd60d78f1ece0cd5b15db83100ae0789
     if curs.count() != 0:
         return True
     return False
@@ -55,7 +42,6 @@ def comment(storyID, CContent, Date):
     connection = MongoClient()
     db = connection['Comments']
     db.users.insert({'storyID': storyID, 'CContent': CContent, 'Date': Date})
-<<<<<<< HEAD
 
 def addStory(Content, Name, Username, Date):
     connection = MongoClient()
@@ -73,10 +59,3 @@ def getComments():
     db = connection['Comments']
     comments = db.comments.find()
     return comments
-=======
-
-def addStory(Content, Name, Username, Date):
-    connection = MongoClient()
-    db = connection['StoryBase']
-    db.stories.insert({'content': Content, 'title': Name, 'uname': Username, 'date': Date})
->>>>>>> 568a5d83fd60d78f1ece0cd5b15db83100ae0789
