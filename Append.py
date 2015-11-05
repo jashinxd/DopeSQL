@@ -40,7 +40,7 @@ def authenticate(username,password):
 
 def comment(storyID, CContent, Date):
     connection = MongoClient()
-    db = connection['Comments']
+    db = connection['StoryBase']
     db.users.insert({'storyID': storyID, 'CContent': CContent, 'Date': Date})
 
 def addStory(Content, Name, Username, Date):
@@ -56,13 +56,13 @@ def getStory():
 
 def getComments():
     connection = MongoClient()
-    db = connection['Comments']
+    db = connection['StoryBase']
     comments = db.comments.find()
     return comments
 
 def getCommentsSpec(postid):
     connection = MongoClient()
-    db = connection['Comments']
+    db = connection['StoryBase']
     comments = db.comments.find()
     return comments 
 
