@@ -41,18 +41,19 @@ def authenticate(username,password):
 def comment(storyID, CContent, Date):
     connection = MongoClient()
     db = connection['StoryBase']
-    db.users.insert({'storyID': storyID, 'CContent': CContent, 'Date': Date})
+    db.comments.insert({'storyID': storyID, 'CContent': CContent, 'Date': Date})
 
-def addStory(Content, Name, Username, Date):
+def addStory(storyID, Content, Name, Username, Date):
     connection = MongoClient()
     db = connection['StoryBase']
-    db.stories.insert({'content': Content, 'title': Name, 'uname': Username, 'date': Date})
+    db.stories.insert({'storyID': storyID, 'content': Content, 'title': Name, 'uname': Username, 'date': Date})
 
 def getStory():
     connection = MongoClient()
     db = connection['StoryBase']
     story = db.stories.find()
     return story
+
 
 def getComments():
     connection = MongoClient()
@@ -63,6 +64,6 @@ def getComments():
 def getCommentsSpec(postid):
     connection = MongoClient()
     db = connection['StoryBase']
-    comments = db.comments.find()
+    comments = db.comments.find({"storyID": postid})
     return comments 
 

@@ -43,12 +43,12 @@ def login():
 	
 @app.route("/storypage", methods=["POST","GET"])
 def storypage():
-    if (request.method == "POST"):
-    	Append.comment(request.form["button"],request.form["comment"],datetime.date.today().strftime("%B %d, %Y"))
     connection = MongoClient()
     db = connection['StoryBase']
-    connectionComments = MongoClient()
-    dbComments = connectionComments['Comments']
+    if (request.method == "POST"):
+    	Append.comment(request.form["button"],request.form["comment"],datetime.date.today().strftime("%B %d, %Y"))
+    #connectionComments = MongoClient()
+    #dbComments = connectionComments['Comments']
     MainHTML = ""
     result = Append.getStory()
     for r in result:
@@ -70,13 +70,15 @@ def storypage():
         <hr> 
         <form method="POST">
         Add a Comment: <input type="text" name="comment">
-        <input type="submit" name="button" value=%s>
+        <button type="submit" name="button" value=%s>Submit</button>
         </form>
-        Comments: <br><hr>""" % (r["uname"])
-        comments = Append.getComments()
+        Comments: <br><hr>""" % (r["storyID"])
+        print r["storyID"]
+        coms = Append.getCommentsSpec(str(r["storyID"]))
         MainHTML = MainHTML + StoryHTML
-    	for y in comments:
-    		commentHTML += '<p style="font-size:70%">'
+    	for y in coms:
+                print y["CContent"]
+    		commentHTML = '<p style="font-size:70%">'
     		commentHTML += """
     		%s <span style="color: #ff0000"> on %s </span>
                 <hr>
@@ -87,6 +89,8 @@ def storypage():
 
 @app.route("/addStory",methods=["GET","POST"])
 def addStory():
+        connection = MongoClient()
+        db = connection['StoryBase']
         if 'n' not in session:
                 return redirect("/login")
         if (request.method=="GET"):
@@ -94,8 +98,10 @@ def addStory():
         else:
                 Story = request.form["Story"]
                 Title = request.form["Title"]
-                
-                Append.addStory(Story,Title,session['n'],datetime.date.today().strftime("%B,%d,%Y"))
+                ID = 0
+                curs = db.stories.find()
+                ID = curs.count()
+                Append.addStory(ID,Story,Title,session['n'],datetime.date.today().strftime("%B,%d,%Y"))
                 return redirect(url_for("storypage"))
                 
 if (__name__ == "__main__"):
